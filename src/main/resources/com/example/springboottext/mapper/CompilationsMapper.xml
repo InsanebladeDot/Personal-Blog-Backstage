@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.CompilationsMapper">
+
+    <insert id="insert">
+        INSERT INTO compilations
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="userId != null">
+                    user_id,
+                </if>
+                <if test="title != null">
+                    title,
+                </if>
+                <if test="description != null">
+                    description,
+                </if>
+                <if test="creatime != null">
+                    creatime,
+                </if>
+                <if test="updatetime != null">
+                    updatetime,
+                </if>
+                <if test="status != null">
+                    status,
+                </if>
+                <if test="profilephoto != null">
+                    profilephoto
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+                <if test="title != null">
+                    #{title},
+                </if>
+                <if test="description != null">
+                    #{description},
+                </if>
+                <if test="creatime != null">
+                    #{creatime},
+                </if>
+                <if test="updatetime != null">
+                    #{updatetime},
+                </if>
+                <if test="status != null">
+                    #{status},
+                </if>
+                <if test="profilephoto !=null">
+                    #{profilephoto}
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE compilations
+        <set>
+                    <if test="userId != null">
+                        user_id = #{userId}
+                           <if test="title != null or description != null or creatime != null or updatetime != null or status != null">,</if>
+                    </if>
+                    <if test="title != null">
+                        title = #{title}
+                           <if test="description != null or creatime != null or updatetime != null or status != null">,</if>
+                    </if>
+                    <if test="description != null">
+                        description = #{description}
+                           <if test="creatime != null or updatetime != null or status != null">,</if>
+                    </if>
+                    <if test="creatime != null">
+                        creatime = #{creatime}
+                           <if test="updatetime != null or status != null">,</if>
+                    </if>
+                    <if test="updatetime != null">
+                        updatetime = #{updatetime}
+                           <if test="status != null">,</if>
+                    </if>
+                    <if test="status != null">
+                        status = #{status}
+                    </if>
+                    <if test="profilephoto != null">
+                        profilephoto = #{profilephoto}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.ProfilesMapper">
+
+    <insert id="insert">
+        INSERT INTO profiles
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="profileId != null">
+                    profile_id,
+                </if>
+                <if test="userId != null">
+                    user_id,
+                </if>
+                <if test="name != null">
+                    `name`,
+                </if>
+                <if test="age != null">
+                    age,
+                </if>
+                <if test="address != null">
+                    address,
+                </if>
+                <if test="idCard != null">
+                    id_card,
+                </if>
+                <if test="school != null">
+                    school,
+                </if>
+                <if test="lifeExperience != null">
+                    life_experience,
+                </if>
+                <if test="sex != null">
+                    sex,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="profileId != null">
+                    #{profileId},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+                <if test="name != null">
+                    #{name},
+                </if>
+                <if test="age != null">
+                    #{age},
+                </if>
+                <if test="address != null">
+                    #{address},
+                </if>
+                <if test="idCard != null">
+                    #{idCard},
+                </if>
+                <if test="school != null">
+                    #{school},
+                </if>
+                <if test="lifeExperience != null">
+                    #{lifeExperience},
+                </if>
+                <if test="sex != null">
+                    #{sex},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE profiles
+        <set>
+                    <if test="userId != null">
+                        user_id = #{userId}
+                           <if test="name != null or age != null or address != null or idCard != null or school != null or lifeExperience != null or sex != null">,</if>
+                    </if>
+                    <if test="name != null">
+                        `name` = #{name}
+                           <if test="age != null or address != null or idCard != null or school != null or lifeExperience != null or sex != null">,</if>
+                    </if>
+                    <if test="age != null">
+                        age = #{age}
+                           <if test="address != null or idCard != null or school != null or lifeExperience != null or sex != null">,</if>
+                    </if>
+                    <if test="address != null">
+                        address = #{address}
+                           <if test="idCard != null or school != null or lifeExperience != null or sex != null">,</if>
+                    </if>
+                    <if test="idCard != null">
+                        id_card = #{idCard}
+                           <if test="school != null or lifeExperience != null or sex != null">,</if>
+                    </if>
+                    <if test="school != null">
+                        school = #{school}
+                           <if test="lifeExperience != null or sex != null">,</if>
+                    </if>
+                    <if test="lifeExperience != null">
+                        life_experience = #{lifeExperience}
+                           <if test="sex != null">,</if>
+                    </if>
+                    <if test="sex != null">
+                        sex = #{sex}
+                    </if>
+        </set>
+        <where>
+                    profile_id = #{profileId}
+        </where>
+    </update>
+</mapper>

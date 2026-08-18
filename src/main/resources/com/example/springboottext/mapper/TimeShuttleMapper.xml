@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.TimeShuttleMapper">
+
+    <insert id="insert">
+        INSERT INTO time_shuttle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="title != null">
+                    title,
+                </if>
+                <if test="content != null">
+                    content,
+                </if>
+                <if test="creatime != null">
+                    creatime,
+                </if>
+                <if test="picture != null">
+                    picture,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="title != null">
+                    #{title},
+                </if>
+                <if test="content != null">
+                    #{content},
+                </if>
+                <if test="creatime != null">
+                    #{creatime},
+                </if>
+                <if test="picture != null">
+                    #{picture},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE time_shuttle
+        <set>
+                    <if test="title != null">
+                        title = #{title}
+                           <if test="content != null or creatime != null or picture != null">,</if>
+                    </if>
+                    <if test="content != null">
+                        content = #{content}
+                           <if test="creatime != null or picture != null">,</if>
+                    </if>
+                    <if test="creatime != null">
+                        creatime = #{creatime}
+                           <if test="picture != null">,</if>
+                    </if>
+                    <if test="picture != null">
+                        picture = #{picture}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

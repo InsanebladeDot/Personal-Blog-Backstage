@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.HistorybrowsingMapper">
+
+    <insert id="insert">
+        INSERT INTO historybrowsing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="historyId != null">
+                    history_id,
+                </if>
+                <if test="userId != null">
+                    user_id,
+                </if>
+                <if test="publishmessageId != null">
+                    publishmessage_id,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="historyId != null">
+                    #{historyId},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+                <if test="publishmessageId != null">
+                    #{publishmessageId},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE historybrowsing
+        <set>
+                    <if test="userId != null">
+                        user_id = #{userId}
+                           <if test="publishmessageId != null">,</if>
+                    </if>
+                    <if test="publishmessageId != null">
+                        publishmessage_id = #{publishmessageId}
+                    </if>
+        </set>
+        <where>
+                    history_id = #{historyId}
+        </where>
+    </update>
+</mapper>

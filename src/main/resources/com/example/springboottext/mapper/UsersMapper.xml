@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.UsersMapper">
+
+    <insert id="insert">
+        INSERT INTO users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="password != null">
+                    `password`,
+                </if>
+                <if test="username != null">
+                    username,
+                </if>
+                <if test="phone != null">
+                    phone,
+                </if>
+                <if test="email != null">
+                    email,
+                </if>
+                <if test="profilephoto != null">
+                    profilephoto,
+                </if>
+                <if test="loginType != null">
+                    `login_type`,
+                </if>
+                <if test="openId != null">
+                    openid,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="password != null">
+                    #{password},
+                </if>
+                <if test="username != null">
+                    #{username},
+                </if>
+                <if test="phone != null">
+                    #{phone},
+                </if>
+                <if test="email != null">
+                    #{email},
+                </if>
+                <if test="profilephoto != null">
+                    #{profilephoto},
+                </if>
+                <if test="loginType != null">
+                    #{loginType},
+                </if>
+                <if test="openId != null">
+                    #{openId},
+                </if>
+        </trim>
+    </insert>
+<!--    <update id="updateByid">-->
+<!--        UPDATE users-->
+<!--        <set>-->
+<!--                    <if test="password != null">-->
+<!--                        `password` = #{password}-->
+<!--                           <if test="username != null or phone != null or email != null or profilephoto != null">,</if>-->
+<!--                    </if>-->
+<!--                    <if test="username != null">-->
+<!--                        username = #{username}-->
+<!--                           <if test="phone != null or email != null or profilephoto != null">,</if>-->
+<!--                    </if>-->
+<!--                    <if test="phone != null">-->
+<!--                        phone = #{phone}-->
+<!--                           <if test="email != null or profilephoto != null">,</if>-->
+<!--                    </if>-->
+<!--                    <if test="email != null">-->
+<!--                        email = #{email}-->
+<!--                           <if test="profilephoto != null">,</if>-->
+<!--                    </if>-->
+<!--                    <if test="profilephoto != null">-->
+<!--                        profilephoto = #{profilephoto}-->
+<!--                    </if>-->
+<!--                    <if test="loginType != null">-->
+<!--                        login_type = #{loginType},-->
+<!--                    </if>-->
+<!--                    <if test="openid != null">-->
+<!--                        openid = #{openId},-->
+<!--                    </if>-->
+
+<!--        </set>-->
+<!--        <where>-->
+<!--                    id = #{id}-->
+<!--        </where>-->
+<!--    </update>-->
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.UserThirdAuthMapper">
+
+    <select id="pagingSelect">
+        Select *
+        from user_third_auth
+        ORDER BY id
+        LIMIT 10 OFFSET #
+        #{index}*10;
+    </select>
+    <insert id="insert">
+        INSERT INTO user_third_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="token != null">
+                    token,
+                </if>
+                <if test="username != null">
+                    username,
+                </if>
+                <if test="avatarUrl != null">
+                    avatar_url,
+                </if>
+                <if test="loginType != null">
+                    login_type,
+                </if>
+                <if test="openid != null">
+                    openid,
+                </if>
+                <if test="createdAt != null">
+                    created_at,
+                </if>
+                <if test="updataAt != null">
+                    updata_at,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="token != null">
+                    #{token},
+                </if>
+                <if test="username != null">
+                    #{username},
+                </if>
+                <if test="avatarUrl != null">
+                    #{avatarUrl},
+                </if>
+                <if test="loginType != null">
+                    #{loginType},
+                </if>
+                <if test="openid != null">
+                    #{openid},
+                </if>
+                <if test="createdAt != null">
+                    #{createdAt},
+                </if>
+                <if test="updataAt != null">
+                    #{updataAt},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE user_third_auth
+        <set>
+                    <if test="token != null">
+                        token = #{token}
+                           <if test="username != null or avatarUrl != null or loginType != null or openid != null or createdAt != null or updataAt != null">,</if>
+                    </if>
+                    <if test="username != null">
+                        username = #{username}
+                           <if test="avatarUrl != null or loginType != null or openid != null or createdAt != null or updataAt != null">,</if>
+                    </if>
+                    <if test="avatarUrl != null">
+                        avatar_url = #{avatarUrl}
+                           <if test="loginType != null or openid != null or createdAt != null or updataAt != null">,</if>
+                    </if>
+                    <if test="loginType != null">
+                        login_type = #{loginType}
+                           <if test="openid != null or createdAt != null or updataAt != null">,</if>
+                    </if>
+                    <if test="openid != null">
+                        openid = #{openid}
+                           <if test="createdAt != null or updataAt != null">,</if>
+                    </if>
+                    <if test="createdAt != null">
+                        created_at = #{createdAt}
+                           <if test="updataAt != null">,</if>
+                    </if>
+                    <if test="updataAt != null">
+                        updata_at = #{updataAt}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

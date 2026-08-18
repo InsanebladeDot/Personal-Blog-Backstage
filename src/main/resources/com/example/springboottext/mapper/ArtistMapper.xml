@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.ArtistMapper">
+
+    <insert id="insert">
+        INSERT INTO artist
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="artistId != null">
+                    artist_id,
+                </if>
+                <if test="artistName != null">
+                    artist_name,
+                </if>
+                <if test="userId != null">
+                    user_id,
+                </if>
+                <if test="aphorism != null">
+                    aphorism,
+                </if>
+                <if test="level != null">
+                    `level`,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="artistId != null">
+                    #{artistId},
+                </if>
+                <if test="artistName != null">
+                    #{artistName},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+                <if test="aphorism != null">
+                    #{aphorism},
+                </if>
+                <if test="level != null">
+                    #{level},
+                </if>
+        </trim>
+    </insert>
+
+    <update id="updateByid">
+        UPDATE artist
+        <set>
+            <if test="artistName != null || userId != null || aphorism != null || modificationTime != null || level != null">
+                <if test="artistName != null">
+                    artist_name = #{artistName},
+                </if>
+                <if test="userId != null">
+                    user_id = #{userId},
+                </if>
+                <if test="aphorism != null">
+                    aphorism = #{aphorism},
+                </if>
+                <if test="modificationTime != null">
+                    modification_time = #{modificationTime, jdbcType=TIMESTAMP},
+                </if>
+                <if test="level != null">
+                    `level` = #{level},
+                </if>
+                <!-- 去掉最后一个逗号 -->
+                <trim suffixOverrides=",">
+                </trim>
+            </if>
+        </set>
+        <where>
+            artist_id = #{artistId}
+        </where>
+    </update>
+</mapper>

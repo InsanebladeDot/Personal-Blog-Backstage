@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.ChatroomMapper">
+
+    <insert id="insert">
+        INSERT INTO chatroom
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="userid != null">
+                    userid,
+                </if>
+                <if test="username != null">
+                    username,
+                </if>
+                <if test="userImg != null">
+                    userImg,
+                </if>
+                <if test="chatText != null">
+                    chatText,
+                </if>
+                <if test="creativeTime != null">
+                    creative_time,
+                </if>
+                <if test="updateTime != null">
+                    update_time,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="userid != null">
+                    #{userid},
+                </if>
+                <if test="username != null">
+                    #{username},
+                </if>
+                <if test="userImg != null">
+                    #{userImg},
+                </if>
+                <if test="chatText != null">
+                    #{chatText},
+                </if>
+                <if test="creativeTime != null">
+                    #{creativeTime},
+                </if>
+                <if test="updateTime != null">
+                    #{updateTime},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE chatroom
+        <set>
+                    <if test="userid != null">
+                        userid = #{userid}
+                           <if test="username != null or userImg != null or chatText != null or creativeTime != null or updateTime != null">,</if>
+                    </if>
+                    <if test="username != null">
+                        username = #{username}
+                           <if test="userImg != null or chatText != null or creativeTime != null or updateTime != null">,</if>
+                    </if>
+                    <if test="userImg != null">
+                        userImg = #{userImg}
+                           <if test="chatText != null or creativeTime != null or updateTime != null">,</if>
+                    </if>
+                    <if test="chatText != null">
+                        chatText = #{chatText}
+                           <if test="creativeTime != null or updateTime != null">,</if>
+                    </if>
+                    <if test="creativeTime != null">
+                        creative_time = #{creativeTime}
+                           <if test="updateTime != null">,</if>
+                    </if>
+                    <if test="updateTime != null">
+                        update_time = #{updateTime}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

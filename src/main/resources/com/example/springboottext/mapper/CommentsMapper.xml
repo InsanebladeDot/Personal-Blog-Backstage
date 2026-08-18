@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.CommentsMapper">
+
+    <insert id="insert">
+        INSERT INTO comments
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="commentId != null">
+                    comment_id,
+                </if>
+                <if test="articleId != null">
+                    article_id,
+                </if>
+                <if test="userId != null">
+                    user_id,
+                </if>
+                <if test="repliedUserId != null">
+                    replied_user_id,
+                </if>
+                <if test="commentText != null">
+                    comment_text,
+                </if>
+                <if test="commentTime != null">
+                    comment_time,
+                </if>
+                <if test="upvotes != null">
+                    upvotes,
+                </if>
+                <if test="downvotes != null">
+                    downvotes,
+                </if>
+                <if test="reviewerId != null">
+                    reviewer_id,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="commentId != null">
+                    #{commentId},
+                </if>
+                <if test="articleId != null">
+                    #{articleId},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+                <if test="repliedUserId != null">
+                    #{repliedUserId},
+                </if>
+                <if test="commentText != null">
+                    #{commentText},
+                </if>
+                <if test="commentTime != null">
+                    #{commentTime},
+                </if>
+                <if test="upvotes != null">
+                    #{upvotes},
+                </if>
+                <if test="downvotes != null">
+                    #{downvotes},
+                </if>
+                <if test="reviewerId != null">
+                    #{reviewerId},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE comments
+        <set>
+                    <if test="articleId != null">
+                        article_id = #{articleId}
+                           <if test="userId != null or repliedUserId != null or commentText != null or commentTime != null or upvotes != null or downvotes != null or reviewerId != null">,</if>
+                    </if>
+                    <if test="userId != null">
+                        user_id = #{userId}
+                           <if test="repliedUserId != null or commentText != null or commentTime != null or upvotes != null or downvotes != null or reviewerId != null">,</if>
+                    </if>
+                    <if test="repliedUserId != null">
+                        replied_user_id = #{repliedUserId}
+                           <if test="commentText != null or commentTime != null or upvotes != null or downvotes != null or reviewerId != null">,</if>
+                    </if>
+                    <if test="commentText != null">
+                        comment_text = #{commentText}
+                           <if test="commentTime != null or upvotes != null or downvotes != null or reviewerId != null">,</if>
+                    </if>
+                    <if test="commentTime != null">
+                        comment_time = #{commentTime}
+                           <if test="upvotes != null or downvotes != null or reviewerId != null">,</if>
+                    </if>
+                    <if test="upvotes != null">
+                        upvotes = #{upvotes}
+                           <if test="downvotes != null or reviewerId != null">,</if>
+                    </if>
+                    <if test="downvotes != null">
+                        downvotes = #{downvotes}
+                           <if test="reviewerId != null">,</if>
+                    </if>
+                    <if test="reviewerId != null">
+                        reviewer_id = #{reviewerId}
+                    </if>
+        </set>
+        <where>
+                    comment_id = #{commentId}
+        </where>
+    </update>
+
+    <update id="updatemodifiedValueByid">
+        UPDATE comments
+        <set>
+            <if test="upvotes != null">
+                upvotes = upvotes + #{upvotes}
+                <if test="downvotes != null or reviewerId != null">,</if>
+            </if>
+            <if test="downvotes != null">
+                downvotes = downvotes + #{downvotes}
+                <if test="reviewerId != null">,</if>
+            </if>
+        </set>
+        <where>
+            comment_id = #{commentId}
+        </where>
+    </update>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.FollowsMapper">
+
+    <insert id="insert">
+        INSERT INTO follows
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="followerId != null">
+                    follower_id,
+                </if>
+                <if test="followingId != null">
+                    following_id,
+                </if>
+                <if test="createdTime != null">
+                    created_time,
+                </if>
+                <if test="modificationTime != null">
+                    modification_time,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="followerId != null">
+                    #{followerId},
+                </if>
+                <if test="followingId != null">
+                    #{followingId},
+                </if>
+                <if test="createdTime != null">
+                    #{createdTime},
+                </if>
+                <if test="modificationTime != null">
+                    #{modificationTime},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE follows
+        <set>
+                    <if test="followerId != null">
+                        follower_id = #{followerId}
+                           <if test="following_id != null or created_time != null or modification_time != null">,</if>
+                    </if>
+                    <if test="followingId != null">
+                        following_id = #{followingId}
+                           <if test="created_time != null or modification_time != null">,</if>
+                    </if>
+                    <if test="createdTime != null">
+                        created_time = #{createdTime}
+                           <if test="modification_time != null">,</if>
+                    </if>
+                    <if test="modificationTime != null">
+                        modification_time = #{modificationTime}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

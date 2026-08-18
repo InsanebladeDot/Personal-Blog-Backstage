@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.PraiseMapper">
+
+    <insert id="insert">
+        INSERT INTO praise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="articleId != null">
+                    article_id,
+                </if>
+                <if test="userId != null">
+                    user_id,
+                </if>
+                <if test="repliedUserId != null">
+                    replied_user_id,
+                </if>
+                <if test="reviewerId != null">
+                    reviewer_id,
+                </if>
+                <if test="creatime != null">
+                    creatime,
+                </if>
+                <if test="updatatime != null">
+                    updatatime,
+                </if>
+                <if test="type != null">
+                    type,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="articleId != null">
+                    #{articleId},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+                <if test="repliedUserId != null">
+                    #{repliedUserId},
+                </if>
+                <if test="reviewerId != null">
+                    #{reviewerId},
+                </if>
+                <if test="creatime != null">
+                    #{creatime},
+                </if>
+                <if test="updatatime != null">
+                    #{updatatime},
+                </if>
+                <if test="type != null">
+                    #{type},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE praise
+        <set>
+                    <if test="articleId != null">
+                        article_id = #{articleId}
+                           <if test="userId != null or repliedUserId != null or reviewerId != null or creatime != null or updatatime != null or type != null">,</if>
+                    </if>
+                    <if test="userId != null">
+                        user_id = #{userId}
+                           <if test="repliedUserId != null or reviewerId != null or creatime != null or updatatime != null or type != null">,</if>
+                    </if>
+                    <if test="repliedUserId != null">
+                        replied_user_id = #{repliedUserId}
+                           <if test="reviewerId != null or creatime != null or updatatime != null or type != null">,</if>
+                    </if>
+                    <if test="reviewerId != null">
+                        reviewer_id = #{reviewerId}
+                           <if test="creatime != null or updatatime != null or type != null">,</if>
+                    </if>
+                    <if test="creatime != null">
+                        creatime = #{creatime}
+                           <if test="updatatime != null or type != null">,</if>
+                    </if>
+                    <if test="updatatime != null">
+                        updatatime = #{updatatime}
+                           <if test="type != null">,</if>
+                    </if>
+                    <if test="type != null">
+                        type = #{type}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.ArticleCategoriesMapper">
+
+    <insert id="insert">
+        INSERT INTO article_categories
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="categoryName != null">
+                    category_name,
+                </if>
+                <if test="mainClassification != null">
+                    main_classification,
+                </if>
+                <if test="topic != null">
+                    topic,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="categoryName != null">
+                    #{categoryName},
+                </if>
+                <if test="mainClassification != null">
+                    #{mainClassification},
+                </if>
+                <if test="topic != null">
+                    #{topic},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE article_categories
+        <set>
+                    <if test="categoryName != null">
+                        category_name = #{categoryName}
+                           <if test="main_classification != null or topic != null">,</if>
+                    </if>
+                    <if test="mainClassification != null">
+                        main_classification = #{mainClassification}
+                           <if test="topic != null">,</if>
+                    </if>
+                    <if test="topic != null">
+                        topic = #{topic}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>

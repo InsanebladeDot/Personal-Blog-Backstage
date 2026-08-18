@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.ArticleMapper">
+    <insert id="insert" parameterType="com.example.springboottext.pojo.Article" useGeneratedKeys="true" keyProperty="articleId">
+        INSERT INTO article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="authorId != null">
+                author_id,
+            </if>
+            <if test="totalLikes != null">
+                total_likes,
+            </if>
+            <if test="totalFavorites != null">
+                total_favorites,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="videoAdress != null and videoAdress != ''">
+                video_adress,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="comments != null">
+                comments,
+            </if>
+            <if test="category != null">
+                category,
+            </if>
+            <if test="articleBlockId != null">
+                article_block_id,
+            </if>
+            <if test="creativeTime != null">
+                creative_time,
+            </if>
+            <if test="articleImg != null">
+                article_img
+            </if>
+
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="authorId != null">
+                #{authorId},
+            </if>
+            <if test="totalLikes != null">
+                #{totalLikes},
+            </if>
+            <if test="totalFavorites != null">
+                #{totalFavorites},
+            </if>
+            <if test="content != null">
+                #{content},
+            </if>
+            <if test="videoAdress != null and videoAdress != ''">
+                #{videoAdress},
+            </if>
+            <if test="title != null">
+                #{title},
+            </if>
+            <if test="comments != null">
+                #{comments},
+            </if>
+            <if test="category != null">
+                #{category},
+            </if>
+            <if test="articleBlockId != null">
+                #{articleBlockId},
+            </if>
+            <if test="creativeTime != null">
+                #{creativeTime},
+            </if>
+            <if test="articleImg != null">
+                 #{articleImg}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByid">
+        UPDATE article
+        <set>
+            <if test="authorId != null">author_id = #{authorId},</if>
+            <if test="totalLikes != null">total_likes = #{totalLikes},</if>
+            <if test="totalFavorites != null">total_favorites = #{totalFavorites},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="videoAdress != null">video_adress = #{videoAdress},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="comments != null">comments = #{comments},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="articleBlockId != null">article_block_id = #{articleBlockId},</if>
+            <if test="creativeTime != null">creative_time = #{creativeTime},</if>
+            <if test="articleImg != null">article_img = #{articleImg}</if>
+        </set>
+        WHERE article_id = #{articleId}
+    </update>
+
+    <update id="updatemodifiedValueByid">
+        update article
+        <set>
+            <if test="totalLikes != null">
+                total_likes = total_likes + #{totalLikes}
+                <if test="totalFavorites != null or content != null or videoAdress != null or title != null or comments != null or category != null or articleBlockId != null or creativeTime != null">,</if>
+            </if>
+            <if test="totalFavorites != null">
+                total_favorites = total_favorites + #{totalFavorites}
+                <if test="content != null or videoAdress != null or title != null or comments != null or category != null or articleBlockId != null or creativeTime != null">,</if>
+            </if>
+            <if test="pageView != null">
+                page_view  =  page_view + #{pageView}
+            </if>
+        </set>
+        <where>
+            article_id = #{articleId}
+        </where>
+    </update>
+</mapper>

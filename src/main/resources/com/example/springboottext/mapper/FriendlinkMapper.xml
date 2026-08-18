@@ -1,0 +1,85 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboottext.mapper.FriendlinkMapper">
+
+    <insert id="insert">
+        INSERT INTO friendlink
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    id,
+                </if>
+                <if test="linkName != null">
+                    linkName,
+                </if>
+                <if test="linkAdress != null">
+                    linkAdress,
+                </if>
+                <if test="linkIntroduce != null">
+                    linkIntroduce,
+                </if>
+                <if test="linkBackground != null">
+                    linkBackground,
+                </if>
+                <if test="linkMail != null">
+                    linkMail,
+                </if>
+                <if test="userId != null">
+                    userid,
+                </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">
+                    #{id},
+                </if>
+                <if test="linkName != null">
+                    #{linkName},
+                </if>
+                <if test="linkAdress != null">
+                    #{linkAdress},
+                </if>
+                <if test="linkIntroduce != null">
+                    #{linkIntroduce},
+                </if>
+                <if test="linkBackground != null">
+                    #{linkBackground},
+                </if>
+                <if test="linkMail != null">
+                    #{linkMail},
+                </if>
+                <if test="userId != null">
+                    #{userId},
+                </if>
+        </trim>
+    </insert>
+    <update id="updateByid">
+        UPDATE friendlink
+        <set>
+                    <if test="linkName != null">
+                        linkName = #{linkName}
+                           <if test="linkAdress != null or linkIntroduce != null or linkBackground != null or linkMail != null or userid != null">,</if>
+                    </if>
+                    <if test="linkAdress != null">
+                        linkAdress = #{linkAdress}
+                           <if test="linkIntroduce != null or linkBackground != null or linkMail != null or userid != null">,</if>
+                    </if>
+                    <if test="linkIntroduce != null">
+                        linkIntroduce = #{linkIntroduce}
+                           <if test="linkBackground != null or linkMail != null or userid != null">,</if>
+                    </if>
+                    <if test="linkBackground != null">
+                        linkBackground = #{linkBackground}
+                           <if test="linkMail != null or userid != null">,</if>
+                    </if>
+                    <if test="linkMail != null">
+                        linkMail = #{linkMail}
+                           <if test="userid != null">,</if>
+                    </if>
+                    <if test="userId != null">
+                        userid = #{userId}
+                    </if>
+        </set>
+        <where>
+                    id = #{id}
+        </where>
+    </update>
+</mapper>
