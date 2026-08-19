@@ -3,6 +3,7 @@ import com.example.springboottext.exception.model.AccountNotFoundException;
 import com.example.springboottext.pojo.Result;
 import com.example.springboottext.pojo.UserThirdAuth;
 import com.example.springboottext.pojo.Users;
+import com.example.springboottext.service.IUsersService;
 import com.example.springboottext.untill.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qcloud.cos.utils.UrlEncoderUtils;
@@ -56,7 +57,7 @@ public class GiteeLoginController {
     @Autowired
     private UserThirdAuthController userThirdAuthController;
     @Autowired
-    private UsersController usersController;
+    private IUsersService usersService;
 
     @GetMapping("/callback")
     public RedirectView handleCallback(HttpServletRequest request) {
@@ -139,7 +140,9 @@ public class GiteeLoginController {
             //密码默认是123456
             users.setPassword("123456");
             // 把与之对应的 插入到用户表中
-            usersController.insert(users);
+            //注意:这里是后端内部调用,密码为明文,直接走 Service 入库(SHA256+盐),
+            //不能走 UsersController.insert(它会按 RSA 密文解密,明文会解密失败)
+            usersService.insert(users);
 
         }catch (Exception e){
             throw new AccountNotFoundException("在第三方登录插入用户时发生错误");

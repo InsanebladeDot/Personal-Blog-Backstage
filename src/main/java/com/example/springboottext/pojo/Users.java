@@ -2,6 +2,7 @@ package com.example.springboottext.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -26,6 +27,11 @@ public class Users implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    /**
+     * 密码:只允许从 JSON 接收(WRITE_ONLY),序列化输出与 toString 均不暴露,防止哈希泄露
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ToString.Exclude
     private String password;
 
     private String username;

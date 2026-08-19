@@ -104,7 +104,7 @@
 | `GlobalExceptionHandler` | `exception/` | 全局异常处理，统一错误响应 |
 | `WebConfig` / `CorsConfig` | `untill/` | 拦截器注册 + 跨域配置 |
 | `JwtUtils` | `untill/` | JWT 生成与解析（HS256） |
-| `SHA256Util` / `KaisaUtil` | `untill/` | 密码/数据加密工具 |
+| `SHA256Util` | `untill/` | 密码加密工具（SHA256 + 随机盐，注册/登录统一使用） |
 | `RedisServe` + `RedisConfig` | `redis/` | Redis 缓存读写封装（含过期时间、List 操作） |
 | `MyWebSocketHandler` | `webSocet/` | WebSocket 消息广播（聊天室） |
 | `COSUtil` + `UploadFileController` | `untill/CosConfig/` | 腾讯云 COS 文件上传 |
@@ -144,7 +144,7 @@ Controller → Service → Mapper → MySQL / Redis
 
 | 前缀 | 模块 |
 | --- | --- |
-| `/Login` | 登录、注册、账户更新（已排除拦截） |
+| `/Login` | 登录、注册、第三方登录查询（仅这 3 个接口放行拦截；`PUT /Login` 修改密码需 JWT） |
 | `/giteeLogin` | Gitee 第三方 OAuth 登录（已排除拦截） |
 | `/article` | 文章（分页/分类/随机/搜索/增删改） |
 | `/articleCategories` | 文章分类 |
@@ -171,7 +171,7 @@ Controller → Service → Mapper → MySQL / Redis
 
 ## 五、鉴权说明（拦截器规则）
 
-`MyInterceptor` 拦截所有路径（`/**`），除 `/Login/**` 与 `/giteeLogin/**` 外：
+`MyInterceptor` 拦截所有路径（`/**`），仅放行 `/Login`、`/Login/publicKey`、`/Login/registeredAccount`、`/Login/open` 与 `/giteeLogin/**`（`PUT /Login` 修改密码不再放行，必须登录）：
 
 1. **GET 请求直接放行** —— 查询类操作无需登录即可访问；
 2. **其他请求（POST / PUT / DELETE 等）必须携带有效 JWT**：
@@ -180,6 +180,37 @@ Controller → Service → Mapper → MySQL / Redis
    - `token` 无法通过 `JwtUtils.parseJWT` 解析 → 返回 `{"code":0,"msg":"No_LOGIN"}`。
 
 登录成功后由 `/Login` 返回 `token`，前端在后续写操作请求头中携带 `token: <jwt>` 即可。
+
+### 密码传输加密（RSA-2048 OAEP/SHA-256）
+
+密码在网络上不出现明文，采用前后端 RSA 密文传输：
+
+```
+前端                                             后端
+ │ 1. GET /Login/publicKey                         │
+ ├────────────────────────────────────────────────►│ 返回 { code:1, data:"Base64(X.509 SPKI 公钥)" }
+ │ 2. password = Base64(RSA-OAEP(SHA-256, 公钥, 明文密码))
+ │ 3. POST /Login { username, password: 密文 }      │
+ ├────────────────────────────────────────────────►│ 私钥解密 → 明文 → 原有 SHA256+盐 校验(Loginfind)
+ │ 4. { code:1, data:{ user, token } }             │
+ ◄────────────────────────────────────────────────┤
+```
+
+- 密钥对由 `RSAKeyService` 在启动时生成并持久化（`rsa.key-path`，默认 `./rsa-keys/`），重启不换钥；
+- 登录 `POST /Login`、注册 `POST /Login/registeredAccount` / `POST /users`、改密 `PUT /Login` 的密码字段均为 RSA 密文，后端**先解密、后走原有 SHA256 校验/入库**；
+- ⚠️ Java 端必须显式指定 `OAEPParameterSpec("SHA-256","MGF1",MGF1ParameterSpec.SHA256,...)`，与前端 Web Crypto `RSA-OAEP + SHA-256` 互通（默认 MGF1 是 SHA-1 会解密失败）；
+- ⚠️ `crypto.subtle` 仅在 HTTPS/localhost 可用，生产必须启用 HTTPS；若暂时无 HTTPS 需改用 `jsencrypt` + `RSA/ECB/PKCS1Padding`；
+- 第三方登录（Gitee）为后端内部调用，密码明文直接走 Service 入库，不走 RSA 解密路径。
+
+### 修改密码（`PUT /Login`）
+
+需携带请求头 `token`（登录态校验，只允许修改当前登录用户自己的密码）与请求体：
+
+```json
+{ "oldPassword": "RSA密文", "newPassword": "RSA密文" }
+```
+
+后端解密后校验旧密码，通过后新密码经 SHA256+盐 哈希入库（`/Login` 已从拦截器排除清单中移除）。
 
 ---
 
@@ -197,6 +228,7 @@ Controller → Service → Mapper → MySQL / Redis
 | `client_id / client_secret / redirect_uri` | Gitee OAuth 应用凭证 |
 | `spring.data.redis.*` | Redis 连接（host/port/password） |
 | `spring.redis.redisson.config` | Redisson 配置文件路径 |
+| `rsa.key-path` | RSA 传输加密密钥对持久化目录（默认 `./rsa-keys/`） |
 
 > ⚠️ 注意：`application.properties` 中包含数据库、COS、Gitee 等敏感凭证，生产环境请通过环境变量或密钥管理服务注入，切勿提交到公开仓库。
 

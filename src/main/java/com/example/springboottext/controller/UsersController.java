@@ -6,6 +6,7 @@ import com.example.springboottext.service.IArticleService;
 import com.example.springboottext.service.IArtistService;
 import com.example.springboottext.service.IProfilesService;
 import com.example.springboottext.untill.CosConfig.COSUtil;
+import com.example.springboottext.untill.RSAKeyService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,8 @@ private IArtistService artistService;
 @Qualifier("articleServiceImpl")
 @Autowired
 private IArticleService articleService;
+@Autowired
+private RSAKeyService rsaKeyService;
 
     // 增删改查
     //获取全部
@@ -114,14 +117,16 @@ public Result getPaginatedList(@PathVariable Integer index , @PathVariable Integ
 @PostMapping
 public Result insert(@RequestBody Users users) {
     try {
-        log.info("新增用户{}", users);//Kaisa 密文
-        String password = users.getPassword();//Kaisa 密文
+        log.info("新增用户{}", users);
+        //RSA 解密:前端上传的 password 是公钥加密的密文,解密出明文密码
+        String plainPassword = rsaKeyService.decrypt(users.getPassword());
+        users.setPassword(plainPassword);
 
-        usersService.insert(users);
+        usersService.insert(users);//内部会做 SHA256+盐 哈希入库
         // 同时添加Profiles 数据
         Profiles profile = new Profiles();
         // 注册
-        users.setPassword(password);//Kaisa 密文
+        users.setPassword(plainPassword);//恢复明文密码,用于登录查询拿到自增ID
 
         Users foundUser = usersService.Loginfind(users);
         profile.setUserId(foundUser.getId());

@@ -8,7 +8,6 @@ import com.example.springboottext.mapper.UsersMapper;
 import com.example.springboottext.redis.RedisServe;
 import com.example.springboottext.service.IUsersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboottext.untill.KaisaUtil;
 import com.example.springboottext.untill.SHA256Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -79,40 +78,54 @@ public class UsersServiceImpl implements IUsersService {
 
      @Override
      public void deleteByid(Integer id) {
+          RedisServe.deleteKey(key + id);
+          RedisServe.deleteKey(key + "List");
           usersmapper.deleteByid(id);
      }
 
      @Override
      public void insert(Users users) {
-          log.info("注册的时候的Kaisa密文：{}",users.getPassword());//Kaisa 密文
-          //把KaiSa 密文 解密 成明文 再 把 明文 加密成SHA256
-          //1.把Kaisa 密文转化成 明文
-          String password = KaisaUtil.decryptKaiser(users.getPassword());
-          //再把明文转化为 SHA256 的密文
-          users.setPassword(SHA256Util.encryptPassword(password));
-          log.info("注册传递了密文：{}",users.getPassword());
+          //只使用一种加密:对前端提交的明文密码直接做 SHA256+盐 哈希后入库(不再使用凯撒加密)
+          String plainPassword = users.getPassword();
+          if (plainPassword == null || plainPassword.isEmpty()) {
+               throw new IllegalArgumentException("密码不能为空");
+          }
+          users.setPassword(SHA256Util.encryptPassword(plainPassword));
           usersmapper.insert(users);
+          //清除用户列表缓存,保证新用户立即可见
+          RedisServe.deleteKey(key + "List");
      }
 
      @Override
      public void updateByid(Users users) {
+          //密码更新同样走 SHA256+盐 哈希,防止明文入库
+          if (users.getPassword() != null && !users.getPassword().isEmpty()) {
+               users.setPassword(SHA256Util.encryptPassword(users.getPassword()));
+          }
           usersmapper.updateByid(users);
+          //更新后清除缓存,避免后续读取到旧数据(如旧密码哈希)
+          if (users.getId() != null) {
+               RedisServe.deleteKey(key + users.getId());
+          }
+          RedisServe.deleteKey(key + "List");
      }
 
      @Override
      public Users Loginfind(Users users) throws Exception {
-          String password = users.getPassword();//Kaisa 密文
-          log.info("传递的Kaisa密文？？{}", password);//Kaisa解密
-          log.info("传递的明文？？{}", KaisaUtil.decryptKaiser(password));//Kaisa解密
-          //获取单个对应用户
-          users = usersmapper.Loginfind(users);//SHA256 的密文
+          String plainPassword = users.getPassword();
+          //按用户名或邮箱查询用户(密码不参与 SQL 查询)
+          Users dbUser = usersmapper.Loginfind(users);
 
-          log.info("密码对："+KaisaUtil.decryptKaiser(password)+':'+users.getPassword());
-          log.info("是否对嘛？？：{}",SHA256Util.verifyPassword(KaisaUtil.decryptKaiser(password), users.getPassword()));
-
-          if(users != null && SHA256Util.verifyPassword(KaisaUtil.decryptKaiser(password), users.getPassword()) ||users.getPassword().equals(KaisaUtil.decryptKaiser(password)) ){ //Kaisa 解密的明文，和SHA256 的密文 通过快捷登录的时候 避免了 因为SHA 密码完全相同 导致的问题
-               return users;
-          }else return null;
+          //只使用一种加密:SHA256+盐 校验
+          //注意:必须 dbUser != null 之后再访问 dbUser.getPassword(),否则空指针;
+          //且不可出现 (A && B) || C 这种优先级陷阱
+          if (dbUser != null
+                  && dbUser.getPassword() != null
+                  && plainPassword != null
+                  && SHA256Util.verifyPassword(plainPassword, dbUser.getPassword())) {
+               return dbUser;
+          }
+          return null;
      }
 
      @Override
